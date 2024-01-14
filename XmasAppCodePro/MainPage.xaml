@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:XmasAppCodePro.Models"
+             xmlns:viewmodels="clr-namespace:XmasAppCodePro.ViewModels"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             IconImageSource="Cerca.png"
+             Title="Xmas AppCode - Pro"
+             x:Class="XmasAppCodePro.MainPage">
+
+    <ContentPage.BindingContext>
+        <viewmodels:MainPageViewModel/>
+    </ContentPage.BindingContext>
+
+
+    <StackLayout Padding="10" Spacing="10">
+        <SearchBar 
+         x:Name="barcodeResult" 
+         Keyboard="Numeric" 
+         Text="{Binding Barcode}"
+         Placeholder="Barcode" 
+         PlaceholderColor="LightGray"
+         SearchCommand="{Binding RicuperaProdottoDalBarcode}"
+         />
+        <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+            <cv:CameraView 
+                x:Name="cameraView"
+                CamerasLoaded="cameraview_CamerasLoaded"
+                BarCodeDetectionEnabled="True"
+                BarcodeDetected="cameraview_BarcodeDetected" 
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </Frame>
+
+        <StackLayout>
+            <Frame BackgroundColor="LightGray" Padding="10" HeightRequest="420">
+                <ScrollView>
+                    <CollectionView EmptyView="Nessun prodotto cercato." ItemsSource="{Binding CatalogoProdotti}"
+                 ItemsLayout="VerticalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Prodotto">
+
+                                <Frame BackgroundColor="PowderBlue" Padding="10">
+                                    <StackLayout>
+                                        <Frame HeightRequest="160" WidthRequest="320" BackgroundColor="GhostWhite" Padding="10" >
+                                            <Image Source="{Binding ImageUrl}" Aspect="Center" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="140" WidthRequest="300"/>
+                                        </Frame>
+                                        <Label Text="{Binding Barcode, StringFormat='Barcode: {0}'}" FontAttributes="Bold" TextColor="DarkGreen"/>
+                                        <Label Text="{Binding Nome}" FontSize="Medium" FontAttributes="Bold"/>
+                                        <Label Text="{Binding Descrizione}" FontSize="Body" />
+                                        <Label Text="{Binding Prezzo, StringFormat='Prezzo: {0:C2}'}"/>
+                                        <Label Text="{Binding PesoLordo, StringFormat='Peso Lordo Kg: {0:N3}'}"/>
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </Frame>
+        </StackLayout>
+        <HorizontalStackLayout
+       Padding="0,10"
+               Spacing="50"
+               HorizontalOptions="FillAndExpand">
+
+            <Button
+x:Name="RefreshBtn"
+Text="Refresh"
+SemanticProperties.Hint="Naviga verso la pagina di inserimento prodotto."
+Command="{Binding RefreshCommand}"
+HorizontalOptions="Center" 
+WidthRequest="160"
+HeightRequest="60"/>
+
+            <Button
+x:Name="RicercaBtn"
+Text="Cerca"
+SemanticProperties.Hint="Esegue la ricerca del prodotto"
+Command="{Binding RicuperaProdottoDalBarcode}"
+HorizontalOptions="Center" 
+WidthRequest="160"
+HeightRequest="60"/>
+        </HorizontalStackLayout>
+        <Label Text="{Binding Message}" TextColor="Red"/>
+    </StackLayout>
+</ContentPage>

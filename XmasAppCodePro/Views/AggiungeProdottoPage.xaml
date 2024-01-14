@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:model="clr-namespace:XmasAppCodePro.Models"
+             xmlns:viewmodel="clr-namespace:XmasAppCodePro.ViewModels"
+             x:Class="XmasAppCodePro.Views.AggiungeProdottoPage"
+             IconImageSource="Aggiunge.png"
+             >
+    <ContentPage.BindingContext>
+        <viewmodel:AggiungeProdottoPageViewModel/>
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <StackLayout Padding="10" Spacing="10" HorizontalOptions="CenterAndExpand">
+            <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+                <cv:CameraView 
+                x:Name="cameraView"
+                CamerasLoaded="cameraview_CamerasLoaded"
+                BarCodeDetectionEnabled="True"
+                BarcodeDetected="cameraview_BarcodeDetected" 
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            </Frame>
+            <SearchBar 
+         x:Name="barcodeResult" 
+         Keyboard="Numeric" 
+         Text="{Binding Barcode}"
+         Placeholder="Barcode" 
+         PlaceholderColor="LightGray"
+         SearchCommand="{Binding RicuperaProdottoDalBarcode}" />
+
+            <Label Text="Prodotto: "/>
+            <Entry Text="{Binding Nome}" Placeholder="Prodotto" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text"/>
+
+            <Label Text="Descrizione Prodotto" />
+            <Entry Text="{Binding Descrizione}" Placeholder="Descrizione Prodotto" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text"/>
+
+            <HorizontalStackLayout>
+                <Label Text="Id Categoria: " VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding CategoriaId}" VerticalTextAlignment="Center" Placeholder="Codice Categoria" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="175"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Peso Lordo: " VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding PesoLordo}" VerticalTextAlignment="Center" Placeholder="0,000" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="182"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Prezzo Unitario €: " VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding Prezzo}" VerticalTextAlignment="Center" Placeholder="0,00" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="125"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout>
+                <Label Text="Quantità Unitaria: " VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding Quantita}" VerticalTextAlignment="Center" Placeholder="0" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="125"/>
+            </HorizontalStackLayout>
+
+            <Label Text="ImageUri: " VerticalTextAlignment="Center"/>
+            <Entry Text="{Binding ImageUrl}" VerticalTextAlignment="Center" Placeholder="https://placeholder.co/100" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Url"/>
+
+            <StackLayout>
+                <Frame HeightRequest="230" BackgroundColor="LightGray" Padding="10">
+                    <CollectionView x:Name="CollectionProdotti" ItemsSource="{Binding CatalogoProdotti}"
+                ItemsLayout="VerticalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Prodotto">
+                                <ScrollView>
+                                    <Frame BackgroundColor="PowderBlue" Padding="10" MinimumWidthRequest="250">
+                                        <StackLayout>
+                                            <Label Text="{Binding Id, StringFormat='Codice ID: {0}'}" FontAttributes="Bold" TextColor="DarkGreen"/>
+                                            <Label Text="{Binding Barcode, StringFormat='Barcode: {0}'}" FontAttributes="Bold" TextColor="DarkGreen"/>
+                                            <Label Text="{Binding Nome}" FontSize="Medium" FontAttributes="Bold"/>
+                                            <Label Text="{Binding Descrizione}" FontSize="Body"  LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Prezzo, StringFormat='Prezzo: {0:C2}'}"/>
+                                            <Label Text="{Binding PesoLordo, StringFormat='Peso Lordo Kg: {0:N3}'}"/>
+                                        </StackLayout>
+                                    </Frame>
+                                </ScrollView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+                <HorizontalStackLayout
+                           Padding="0,10"
+                           Spacing="50"
+                           HorizontalOptions="FillAndExpand">
+                    <Button
+            x:Name="CercaBtn"
+            Text="Cerca" IsEnabled="False"
+            SemanticProperties.Hint="Save the object you click"
+            HorizontalOptions="Center" 
+             WidthRequest="160"
+             HeightRequest="60"
+                    Command="{Binding CategorieFromAggiungeProdottoPageViewModel}"/>
+                    <Button
+            x:Name="NewBtn"
+            Text="Salva"
+            SemanticProperties.Hint="Enable the cell cam for read barcode you click"
+            Command="{Binding AggiungeProdotto}"
+            HorizontalOptions="Center" 
+             WidthRequest="160"
+             HeightRequest="60"/>
+                </HorizontalStackLayout>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

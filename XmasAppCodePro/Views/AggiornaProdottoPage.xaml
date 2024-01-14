@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:model="clr-namespace:XmasAppCodePro.Models"
+             xmlns:viewmodel="clr-namespace:XmasAppCodePro.ViewModels"
+             x:Class="XmasAppCodePro.Views.AggiornaProdottoPage"
+             IconImageSource="Aggiorna.png"
+             Title="Aggiorna Prodotto">
+    <ContentPage.BindingContext>
+        <viewmodel:AggiornaProdottoPageViewModel/>
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <StackLayout Padding="5" Spacing="10" HorizontalOptions="CenterAndExpand">
+            <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+                <cv:CameraView 
+                x:Name="cameraView"
+                CamerasLoaded="cameraview_CamerasLoaded"
+                BarCodeDetectionEnabled="True"
+                BarcodeDetected="cameraview_BarcodeDetected" 
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            </Frame>
+
+            <Frame Padding="10" BackgroundColor="#A7CBF6" HeightRequest="200">
+                <Image Source="{Binding ImageUrl}" BackgroundColor="WhiteSmoke" HeightRequest="180" Aspect="Center" />
+            </Frame>
+
+            <SearchBar 
+         x:Name="barcodeResult" 
+         Keyboard="Numeric" 
+         Text="{Binding Barcode}"
+         Placeholder="Barcode" 
+         PlaceholderColor="LightGray"
+         SearchCommand="{Binding RicuperaProdottoDalBarcode}"/>
+
+            <HorizontalStackLayout>
+                <Label Text="Codice Categoria: "/>
+                <Entry Text="{Binding CategoriaId}" Placeholder="Codice Categoria" PlaceholderColor="Gray" Background="#A7CBF6" MaxLength="10" MinimumWidthRequest="120" Keyboard="Numeric"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Prodotto: "/>
+            <Entry Text="{Binding Nome}" Placeholder="Prodotto" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Text"/>
+
+            <Label Text="Descrizione Prodotto" />
+            <Entry Text="{Binding Descrizione}" Placeholder="Descrizione Prodotto" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Text"/>
+
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="Peso Lordo: "/>
+                <Entry Text="{Binding PesoLordo}" Placeholder="0,000" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Text" MinimumWidthRequest="175"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="Prezzo €: "/>
+                <Entry Text="{Binding Prezzo}" Placeholder="0,00" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Text" MinimumWidthRequest="200"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout >
+                <Label Text="Quantità Unitaria: " VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding Quantita}" VerticalTextAlignment="Center" Placeholder="0" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Text" MinimumWidthRequest="125"/>
+            </HorizontalStackLayout>
+
+            <Label Text="ImageUri: " VerticalTextAlignment="Center"/>
+            <Entry Text="{Binding ImageUrl}" VerticalTextAlignment="Center" Placeholder="https://placeholder.co/100" PlaceholderColor="Gray" Background="#A7CBF6" Keyboard="Url"/>
+
+            <HorizontalStackLayout
+                       Padding="0,10"
+                       Spacing="60"
+                       HorizontalOptions="FillAndExpand">
+                <Button
+        x:Name="NewBtn"
+        Text="Salva"
+        SemanticProperties.Hint="Enable the cell cam for read barcode you click"
+        Command="{Binding AggiornaProdotto}"
+        HorizontalOptions="Center" 
+             WidthRequest="160"
+             HeightRequest="60"/>
+                <Button
+        x:Name="CercaBtn"
+        Text="Cerca" IsEnabled="True"
+        SemanticProperties.Hint="Search an object with your click"
+        Command="{Binding RicuperaProdotto}"
+        HorizontalOptions="Center" 
+             WidthRequest="160"
+             HeightRequest="60"/>
+            </HorizontalStackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
