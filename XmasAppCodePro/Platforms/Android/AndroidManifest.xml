@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.lconolasco.XmasAppCodePro">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="it.lconolasco.XmasAppCodePro">
 	<application android:allowBackup="true" android:icon="@mipmap/splash" android:supportsRtl="true" android:label="Xmas AppCode Pro"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />

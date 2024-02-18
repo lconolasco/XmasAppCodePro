@@ -7,24 +7,79 @@
     xmlns:views="clr-namespace:XmasAppCodePro.Views"
     Shell.FlyoutBehavior="Flyout"
     Shell.FlyoutHeight="500"
-    Shell.FlyoutWidth="300"
-    >
-
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Gestione Prodotto">
-        <ShellContent
-            Title="Cerca"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="cerca.png"
-            Route="MainPage" />
-        <ShellContent
-            Title="Aggiunge"
-            ContentTemplate="{DataTemplate views:AggiungeProdottoPage}"
-            Icon="aggiunge.png"
-            Route="AggiungeProdottoPage" />
-        <ShellContent
-            Title="Aggiorna"
-            ContentTemplate="{DataTemplate views:AggiornaProdottoPage}"
-            Icon="aggiorna.png"
-            Route="AggiornaProdottoPage" />
+    Shell.FlyoutWidth="300">
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems" Title="Prodotto Menu">
+     <ShellContent
+        Title="Cerca Prodotto"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Icon="cerca.png"
+        Route="MainPage"
+        />
+    <ShellContent
+        Title="Aggiunge Prodotto"
+        ContentTemplate="{DataTemplate views:AggiungeProdottoPage}"
+        Icon="aggiunge.png"
+        Route="AggiungeProdottoPage" />
+    <ShellContent
+        Title="Aggiorna Prodotto"
+        ContentTemplate="{DataTemplate views:AggiornaProdottoPage}"
+        Icon="aggiorna.png"
+        Route="AggiornaProdottoPage" /> 
     </FlyoutItem>
+
+    <ShellContent
+        Title="Aggiunge Categoria"
+        ContentTemplate="{DataTemplate views:AggiungeCategoriaPage}"
+        Icon="aggiunge.png"
+        Route="AggiungeCategoriaPage" />
+    <ShellContent
+        Title="Aggiorna Categoria"
+        ContentTemplate="{DataTemplate views:AggiornaCategoriaPage}"
+        Icon="aggiorna.png"
+        Route="AggiornaCategoriaPage" />
+
+    <Shell.MenuBarItems>
+        <MenuBarItem Text="File">
+                <MenuFlyoutSubItem Text="Prodotto">
+                    <MenuFlyoutItem Text="Aggiunge Prodotto"/>
+                    <MenuFlyoutItem Text="Aggiorna Prodotto"/>
+                </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Categoria">
+                    <MenuFlyoutItem Text="Aggiunge Categoria"/>
+                    <MenuFlyoutItem Text="Aggiorna Categoria"/>
+                </MenuFlyoutSubItem>
+            </MenuBarItem>
+
+            <MenuBarItem Text="Locations">
+                <MenuFlyoutSubItem Text="Change Location">
+                    <MenuFlyoutItem Text="Redmond, USA"/>
+                    <MenuFlyoutSubItem Text="London, UK"/>
+                    <MenuFlyoutItem Text="Berlin, DE"/>
+                    <MenuFlyoutItem Text="Venezia, IT"/>
+                </MenuFlyoutSubItem>
+            </MenuBarItem>
+
+
+            <MenuBarItem Text="Media">
+                <MenuFlyoutItem Text="Play">
+                    <MenuFlyoutItem.IconImageSource>
+                        <FontImageSource Glyph="&#x25B6;"
+                                 FontFamily="Arial" />
+                    </MenuFlyoutItem.IconImageSource>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+        <MenuBarItem Text="View">
+            <MenuFlyoutItem  Text="Refresh">
+                <MenuFlyoutItem.IconImageSource>
+                    <FontImageSource Glyph="&#xf021;"
+                                     Color="{StaticResource Gray950}"
+                                     FontFamily="Arial"/>
+                </MenuFlyoutItem.IconImageSource>
+
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Change Theme"/>
+        </MenuBarItem>
+    </Shell.MenuBarItems>
 </Shell>

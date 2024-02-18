@@ -12,15 +12,17 @@
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <StackLayout Padding="5" Spacing="10" HorizontalOptions="CenterAndExpand">
-            <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+        <StackLayout Padding="10" Spacing="10" HorizontalOptions="CenterAndExpand">
+            <Frame Padding="10" BackgroundColor="WhiteSmoke">
                 <cv:CameraView 
                 x:Name="cameraView"
-                CamerasLoaded="cameraview_CamerasLoaded"
+                CamerasLoaded="Cameraview_CamerasLoaded"
                 BarCodeDetectionEnabled="True"
-                BarcodeDetected="cameraview_BarcodeDetected" 
+                BarcodeDetected="Cameraview_BarcodeDetected" 
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand"
+                HeightRequest="70"
+                WidthRequest="470"/>
             </Frame>
 
             <Frame Padding="10" BackgroundColor="#A7CBF6" HeightRequest="200">
@@ -33,7 +35,15 @@
          Text="{Binding Barcode}"
          Placeholder="Barcode" 
          PlaceholderColor="LightGray"
-         SearchCommand="{Binding RicuperaProdottoDalBarcode}"/>
+         SearchCommand="{Binding RicuperaProdotto}"/>
+            
+            <Label 
+                Text="{Binding Message}"
+                TextColor="Red"
+                FontAttributes="Bold"
+                BackgroundColor="LightGray"
+                LineBreakMode="WordWrap"
+                MaxLines="4"/>
 
             <HorizontalStackLayout>
                 <Label Text="Codice Categoria: "/>
@@ -64,7 +74,7 @@
 
             <HorizontalStackLayout
                        Padding="0,10"
-                       Spacing="60"
+                       Spacing="50"
                        HorizontalOptions="FillAndExpand">
                 <Button
         x:Name="NewBtn"

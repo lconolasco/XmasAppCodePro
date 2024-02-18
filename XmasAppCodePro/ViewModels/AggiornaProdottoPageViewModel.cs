@@ -11,13 +11,13 @@ namespace XmasAppCodePro.ViewModels
     public partial class AggiornaProdottoPageViewModel : ObservableObject
     {
         //Servizio di connessione per il consumo della REST API
-        HttpClient client;
+        readonly HttpClient client;
 
         //Configurazione JSON per la serializzazione
-        JsonSerializerOptions _serializerOptions;
+        readonly JsonSerializerOptions _serializerOptions;
 
         //Definizione dell'URL base
-        string baseUrl = "https://lconolasco.somee.com/api";
+        readonly string baseUrl = "https://lconolasco.somee.com/api";
 
         [ObservableProperty]
         public string _barcode;
@@ -75,6 +75,7 @@ namespace XmasAppCodePro.ViewModels
 
         private async Task RicuperaProdottoAsync()
         {
+            Message=string.Empty;
             try
             {
                 CatalogoProdotti.Clear();
@@ -85,41 +86,37 @@ namespace XmasAppCodePro.ViewModels
 
                     if (response.IsSuccessStatusCode)
                     {
-                        using (var responseStream = await response.Content.ReadAsStreamAsync())
-                        {
-                            var data = await JsonSerializer.DeserializeAsync<Prodotto>(responseStream, _serializerOptions);
-                            this.Prodotto = data;
-                            Nome = data.Nome;
-                            Descrizione = data.Descrizione;
-                            ImageUrl = data.ImageUrl;
-                            Prezzo = data.Prezzo;
-                            PesoLordo = data.PesoLordo;
-                            Quantita = data.Quantita;
-                            CategoriaId = data.CategoriaId;
+                        using var responseStream = await response.Content.ReadAsStreamAsync();
+                        var data = await JsonSerializer.DeserializeAsync<Prodotto>(responseStream, _serializerOptions);
+                        this.Prodotto = data;
+                        Nome = data.Nome;
+                        Descrizione = data.Descrizione;
+                        ImageUrl = data.ImageUrl;
+                        Prezzo = data.Prezzo;
+                        PesoLordo = data.PesoLordo;
+                        Quantita = data.Quantita;
+                        CategoriaId = data.CategoriaId;
 
-                            CatalogoProdotti.Add(data);
-                        }
-                        
+                        CatalogoProdotti.Add(data);
+
                     }
                     else
-                        {
-                            Prodotto vuoto = new Prodotto();
-
-                            vuoto.Nome = "Nessuno Prodotto trovato con questo codice.";
-                            vuoto.Descrizione = "Certifica che questo prodotto sia inserito nel Database in precedenza.";
-                            CatalogoProdotti.Add(vuoto);
-                        }
+                    {
+                        Message = $"Nessuno Prodotto trovato con questo codice.Certifica che questo prodotto sia inserito nel Database in precedenza.";
+                    }
                 }
             }
             catch (Exception e)
             {
 
                 Message = "Connessione falita col Database. Ricontrolla le conessione e riprova.";
-                Prodotto vuoto = new Prodotto();
-                vuoto.Nome = Message;
-                vuoto.Descrizione = e.Message;
+                Prodotto vuoto = new()
+                {
+                    Nome = Message,
+                    Descrizione = e.Message
+                };
                 CatalogoProdotti.Add(vuoto);
-                _ = Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
+                await Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
             }
             return;
         }
@@ -131,20 +128,22 @@ namespace XmasAppCodePro.ViewModels
             var url = $"{baseUrl}/Prodotto/{Prodotto.Barcode}";
             try
             {
-                if(Barcode is not null || Nome is not null || Descrizione is not null || Prezzo >=0 || PesoLordo >= 0 || Quantita >=0 || CategoriaId >=0)
+                if(Barcode is not null && Nome is not null && Descrizione is not null && Prezzo >=0 && PesoLordo >= 0 && Quantita >=0 && CategoriaId >=0)
                 {
-                    Prodotto prodotto = new Prodotto();
-                    prodotto.Barcode = Barcode;
-                    prodotto.Nome = Nome;
-                    prodotto.Descrizione= Descrizione;
-                    prodotto.ImageUrl = ImageUrl;
-                    prodotto.Prezzo = Prezzo;
-                    prodotto.PesoLordo = PesoLordo;
-                    prodotto.Quantita = Quantita;
-                    prodotto.CategoriaId = CategoriaId;
+                    Prodotto prodotto = new()
+                    {
+                        Barcode = Barcode,
+                        Nome = Nome,
+                        Descrizione = Descrizione,
+                        ImageUrl = ImageUrl,
+                        Prezzo = Prezzo,
+                        PesoLordo = PesoLordo,
+                        Quantita = Quantita,
+                        CategoriaId = CategoriaId
+                    };
 
                     string prodottoJson = JsonSerializer.Serialize(prodotto, _serializerOptions);
-                    StringContent content = new StringContent(prodottoJson, Encoding.UTF8, "application/json");
+                    StringContent content = new(prodottoJson, Encoding.UTF8, "application/json");
                     var response = await client.PatchAsync(url, content);
 
                     if (response.IsSuccessStatusCode)
@@ -160,18 +159,20 @@ namespace XmasAppCodePro.ViewModels
                         await Shell.Current.GoToAsync("..");
                     }
                     else
-                        _ = Shell.Current.DisplayAlert("Error", response.ToString(), "Ok");
+                        await Shell.Current.DisplayAlert("Error", response.ToString(), "Ok");
 
                 }
                 return;
             }
             catch (Exception e)
             {
-                _ = Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
+                await Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
                 Message = $"Conessione falita col DataBase. Controllare le conessione e riprova.";
-                Prodotto vuoto = new Prodotto();
-                vuoto.Nome = Message;
-                vuoto.Descrizione = e.Message;
+                Prodotto vuoto = new()
+                {
+                    Nome = Message,
+                    Descrizione = e.Message
+                };
                 CatalogoProdotti.Add(vuoto);
             }
         }

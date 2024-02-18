@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local ="clr-namespace:XmasAppCodePro.ViewModels"
+             x:Class="XmasAppCodePro.Views.AggiornaCategoriaPage"
+             Title="Aggiorna Categoria">
+
+    <ContentPage.BindingContext>
+        <local:AggiornaCategoriaPageViewModel/>
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="10" Spacing="10">
+        <SearchBar 
+            x:Name="idResult" 
+            Keyboard="Numeric" 
+            Text="{Binding Id}"
+            Placeholder="Inserisca il Codice della categoria da cercare" 
+            PlaceholderColor="LightGray"
+            SearchCommand="{Binding OttieniCategorieCommand}"
+ />
+        <HorizontalStackLayout>
+            <Label 
+                Text="Codice Categoria : "
+                VerticalOptions="Center" 
+                HorizontalOptions="Start" />
+            <Entry
+                Text="{Binding Id }" 
+                MaxLength="10" 
+                Placeholder="ID Categoria"
+                VerticalOptions="Center" 
+                HorizontalOptions="Start"
+                IsEnabled="False"/>
+        </HorizontalStackLayout>
+        <Label Text="Nome della Categoria:"/>
+
+        <Entry
+            Text="{Binding NomeCategoria}" MaxLength="150" Placeholder="Inserire nome della Categoria"
+            VerticalOptions="Center" 
+            HorizontalOptions="Start" />
+        <HorizontalStackLayout Spacing="50">
+            <Button 
+                Text="Salva"
+                WidthRequest="160"
+                HeightRequest="60"
+                Command="{Binding AggiornaCategoriaCommand}"
+                />
+            
+            <Button 
+                Text="Cerca"
+                WidthRequest="160"
+                HeightRequest="60"
+                Command="{Binding OttieniCategorieCommand}"/>
+        </HorizontalStackLayout>
+        <Label
+            Text="{Binding Message}"
+            TextColor="Red"
+            FontAttributes="Bold"
+            BackgroundColor="LightGray"
+            LineBreakMode="WordWrap"
+            MaxLines="4"
+           
+            />
+    </VerticalStackLayout>
+</ContentPage>

@@ -10,13 +10,13 @@ namespace XmasAppCodePro.ViewModels
     public partial class MainPageViewModel : ObservableObject
     {
         //Serviço de conexao para consumo REST API
-        HttpClient client;
+        readonly HttpClient client;
 
         //Configuraçao do JSON
-        JsonSerializerOptions _serializerOptions;
+        private readonly JsonSerializerOptions _serializerOptions;
 
         //Definiçao da URL base
-        string baseUrl = "https://lconolasco.somee.com/api";
+        readonly string baseUrl = "https://lconolasco.somee.com/api";
 
         [ObservableProperty]
         public int _id;
@@ -79,11 +79,9 @@ namespace XmasAppCodePro.ViewModels
 
             if (response.IsSuccessStatusCode)
             {
-                using (var responseStream = await response.Content.ReadAsStreamAsync())
-                {
-                    var data = await JsonSerializer.DeserializeAsync<ObservableCollection<Prodotto>>(responseStream, _serializerOptions);
-                    CatalogoProdotti = data;
-                }
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                var data = await JsonSerializer.DeserializeAsync<ObservableCollection<Prodotto>>(responseStream, _serializerOptions);
+                CatalogoProdotti = data;
             }
             return;
         }
@@ -108,20 +106,18 @@ namespace XmasAppCodePro.ViewModels
 
                         if (response.IsSuccessStatusCode)
                         {
-                            using (var responseStream = await response.Content.ReadAsStreamAsync())
-                            {
-                                var data = await JsonSerializer.DeserializeAsync<Prodotto>(responseStream, _serializerOptions);
-                                Prodotto = data;
-                                CatalogoProdotti.Add(data);
-
-                            }
+                            using var responseStream = await response.Content.ReadAsStreamAsync();
+                            var data = await JsonSerializer.DeserializeAsync<Prodotto>(responseStream, _serializerOptions);
+                            Prodotto = data;
+                            CatalogoProdotti.Add(data);
                         }
                         else
                         {
-                            Prodotto vuoto = new Prodotto();
-
-                            vuoto.Nome = "Nessuno Prodotto trovato con questo codice.";
-                            vuoto.Descrizione = "Certifica che questo prodotto sia inserito nel Database in precedenza.";
+                            Prodotto vuoto = new()
+                            {
+                                Nome = "Nessuno Prodotto trovato con questo codice.",
+                                Descrizione = "Certifica che questo prodotto sia inserito nel Database in precedenza."
+                            };
                             CatalogoProdotti.Add(vuoto);
                         }
                     }
@@ -129,19 +125,18 @@ namespace XmasAppCodePro.ViewModels
             }
             catch (Exception e)
             {
-                Message = $"Conessione falita col DataBase. Controllare le conessione e riprova.";
-                Prodotto vuoto = new Prodotto();
-                vuoto.Nome = Message;
-                vuoto.Descrizione = e.Message;
+                Message = $"Tentativo di conessione col database falita.";
+                Prodotto vuoto = new()
+                {
+                    Nome = Message,
+                    Descrizione = $"Descrizione del errore: { e.Message }."
+                };
                 CatalogoProdotti.Add(vuoto);
                 _ = Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
             }
             return;
 
         }
-
-        [RelayCommand]
-        private async Task AggiungeProdotto() => await Shell.Current.GoToAsync("AggiungeProdottoPage");
 
         [RelayCommand]
         private void Refresh()

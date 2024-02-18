@@ -19,13 +19,13 @@ namespace XmasAppCodePro.ViewModels
         private Prodotto _prodotto;
 
         //Servizio di connessione per il consumo della REST API
-        HttpClient client;
+        readonly HttpClient client;
 
         //Configurazione JSON
-        JsonSerializerOptions _serializerOptions;
+        readonly JsonSerializerOptions _serializerOptions;
 
         //Definiçao da URL base
-        string baseUrl = "https://lconolasco.somee.com/api";
+        readonly string baseUrl = "https://lconolasco.somee.com/api";
 
 
         [ObservableProperty]
@@ -59,6 +59,9 @@ namespace XmasAppCodePro.ViewModels
         public ObservableCollection<Prodotto> _catalogoProdotti;
 
         [ObservableProperty]
+        public ObservableCollection<Categoria> _listaCategorie;
+
+        [ObservableProperty]
         public string _message;
 
         public AggiungeProdottoPageViewModel()
@@ -69,12 +72,15 @@ namespace XmasAppCodePro.ViewModels
             //Instancia da Coleçao de objetos
             CatalogoProdotti = new ObservableCollection<Prodotto>();
 
+            ListaCategorie = new ObservableCollection<Categoria>();
+
             //Configuraçao da serializaçao do JSON
             _serializerOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
             };
 
+            _=RicuperaCategorieAsync();
         }
 
         //** Consumo da REST API **//
@@ -104,7 +110,7 @@ namespace XmasAppCodePro.ViewModels
 
                     };
                     string prodottoJson = JsonSerializer.Serialize<Prodotto>(prodotto, _serializerOptions);
-                    StringContent content = new StringContent(prodottoJson, Encoding.UTF8, "application/json");
+                    StringContent content = new(prodottoJson, Encoding.UTF8, "application/json");
                     var response = await client.PostAsync(url, content);
 
                     if (response.IsSuccessStatusCode)
@@ -117,14 +123,16 @@ namespace XmasAppCodePro.ViewModels
                         PesoLordo = 0;
                         Quantita = 0;
                         CategoriaId = 0;
-                        await Shell.Current.GoToAsync("..");
+                        _ = Shell.Current.GoToAsync("MainPage");
                     }
                     else
                     {
                         var Message = response.ToString();
-                        _ = Shell.Current.DisplayAlert("Error", Message, "Ok");
-                        Prodotto vuoto = new Prodotto();
-                        vuoto.Nome = Message;
+                        await Shell.Current.DisplayAlert("Error", Message, "Ok");
+                        Prodotto vuoto = new()
+                        {
+                            Nome = Message
+                        };
                     }
                 }
 
@@ -132,8 +140,10 @@ namespace XmasAppCodePro.ViewModels
                 {
                     var Message = $"Tutti Campi sono obbligatori";
                     _ = Shell.Current.DisplayAlert("Error", Message, "Ok");
-                    Prodotto vuoto = new Prodotto();
-                    vuoto.Nome = Message;
+                    Prodotto vuoto = new()
+                    {
+                        Nome = Message
+                    };
                 }
                 return;
             }
@@ -144,20 +154,86 @@ namespace XmasAppCodePro.ViewModels
             }
             return;
         }
-        // Ricupera tutti i prodotti
-        private async Task RicuperaProdottiAsync()
-        {
-            CatalogoProdotti.Clear();
-            var url = $"{baseUrl}/Prodotto";
-            var response = await client.GetAsync(url);
 
-            if (response.IsSuccessStatusCode)
+        //retorna a coleçao de categorias
+        public ICommand RicuperaCategorie =>
+            new Command(async () => await RicuperaCategorieAsync());
+
+        private async Task RicuperaCategorieAsync()
+        {
+            ListaCategorie.Clear();
+            try
             {
-                using (var responseStream = await response.Content.ReadAsStreamAsync())
+                var url = $"{baseUrl}/categoria";
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var data = await JsonSerializer.DeserializeAsync<ObservableCollection<Prodotto>>(responseStream, _serializerOptions);
-                    CatalogoProdotti = data;
+                    using var responseStream = await response.Content.ReadAsStreamAsync();
+                    var data = await JsonSerializer.DeserializeAsync<ObservableCollection<Categoria>>(responseStream, _serializerOptions);
+                    ListaCategorie = data;
                 }
+                else
+                {
+                    Message = $"Tentativo di conessione al database falita.";
+                    
+                }
+                return;
+
+            }
+            catch (Exception e)
+            {
+               await Shell.Current.DisplayAlert("Errore", e.Message, "Ok");
+            }
+            
+            
+        }
+        public ICommand RicuperaProdotto => new Command(async () => await RicuperaProdottoAsync());
+
+        private async Task RicuperaProdottoAsync()
+        {
+            Message = string.Empty;
+            try
+            {
+                CatalogoProdotti.Clear();
+                if (Barcode is not null)
+                {
+                    var url = $"{baseUrl}/Prodotto/{Barcode}";
+                    var response = await client.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using var responseStream = await response.Content.ReadAsStreamAsync();
+                        var data = await JsonSerializer.DeserializeAsync<Prodotto>(responseStream, _serializerOptions);
+                        this.Prodotto = data;
+                        Nome = data.Nome;
+                        Descrizione = data.Descrizione;
+                        ImageUrl = data.ImageUrl;
+                        Prezzo = data.Prezzo;
+                        PesoLordo = data.PesoLordo;
+                        Quantita = data.Quantita;
+                        CategoriaId = data.CategoriaId;
+
+                        CatalogoProdotti.Add(data);
+
+                    }
+                    else
+                    {
+                        Message = $"Nessuno Prodotto trovato con questo codice.Certifica che questo prodotto sia inserito nel Database in precedenza.";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+                Message = "Connessione falita col Database. Ricontrolla le conessione e riprova.";
+                Prodotto vuoto = new()
+                {
+                    Nome = Message,
+                    Descrizione = e.Message
+                };
+                CatalogoProdotti.Add(vuoto);
+                await Shell.Current.DisplayAlert("Avviso", e.Message, "Ok");
             }
             return;
         }

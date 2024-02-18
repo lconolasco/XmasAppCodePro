@@ -12,7 +12,6 @@
         <viewmodels:MainPageViewModel/>
     </ContentPage.BindingContext>
 
-
     <StackLayout Padding="10" Spacing="10">
         <SearchBar 
          x:Name="barcodeResult" 
@@ -22,14 +21,17 @@
          PlaceholderColor="LightGray"
          SearchCommand="{Binding RicuperaProdottoDalBarcode}"
          />
-        <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+        <Frame BackgroundColor="WhiteSmoke" Padding="10">
             <cv:CameraView 
                 x:Name="cameraView"
                 CamerasLoaded="cameraview_CamerasLoaded"
                 BarCodeDetectionEnabled="True"
                 BarcodeDetected="cameraview_BarcodeDetected" 
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                HeightRequest="70"
+                WidthRequest="470"
+                />
         </Frame>
 
         <StackLayout>
@@ -43,7 +45,11 @@
                                 <Frame BackgroundColor="PowderBlue" Padding="10">
                                     <StackLayout>
                                         <Frame HeightRequest="160" WidthRequest="320" BackgroundColor="GhostWhite" Padding="10" >
-                                            <Image Source="{Binding ImageUrl}" Aspect="Center" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="140" WidthRequest="300"/>
+                                            <Image  Aspect="Center" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="140" WidthRequest="300">
+                                                <Image.Source>
+                                                    <UriImageSource Uri="{Binding ImageUrl}" CacheValidity="30:00:00:00" CachingEnabled="True"/>
+                                                </Image.Source>
+                                            </Image>
                                         </Frame>
                                         <Label Text="{Binding Barcode, StringFormat='Barcode: {0}'}" FontAttributes="Bold" TextColor="DarkGreen"/>
                                         <Label Text="{Binding Nome}" FontSize="Medium" FontAttributes="Bold"/>
@@ -61,7 +67,7 @@
         <HorizontalStackLayout
        Padding="0,10"
                Spacing="50"
-               HorizontalOptions="FillAndExpand">
+               HorizontalOptions="CenterAndExpand">
 
             <Button
 x:Name="RefreshBtn"

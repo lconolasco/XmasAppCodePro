@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:XmasAppCodePro.Models"
+             xmlns:viewmodel="clr-namespace:XmasAppCodePro.ViewModels"
+             x:Class="XmasAppCodePro.Views.AggiungeCategoriaPage"
+             IconImageSource="Aggiunge.png"
+             Title="Aggiunge Categoria">
+    <ContentPage.BindingContext>
+        <viewmodel:AggiungeCategoriaPageViewModel/>
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="10" Spacing="10">
+        <Label 
+                Text="Nome Categoria: "
+                VerticalOptions="Center" 
+                HorizontalOptions="Start" />
+            <Entry
+                Text="{Binding Nome}"
+                VerticalOptions="Center"
+                HorizontalOptions="Start"
+                MaximumWidthRequest="420"
+                MaxLength="150"
+                Placeholder="Inserire nome della categoria"/>
+
+            <Label 
+                Text="{Binding Message}"
+                TextColor="Red"
+                FontAttributes="Bold"
+                BackgroundColor="LightGray"
+                LineBreakMode="WordWrap"
+                MaxLines="4"/>
+        
+        <HorizontalStackLayout 
+            Spacing="50"
+            Padding="0,0,0,10"
+            HorizontalOptions="CenterAndExpand">
+            <Button 
+                Text="Cerca"
+                SemanticProperties.Hint="Enable the cell cam for read barcode you click"
+                Command="{Binding RicuperaCategorieCommand}"
+                HorizontalOptions="Center" 
+                WidthRequest="160"
+                HeightRequest="60"/>
+            <Button 
+                Text="Salva"
+                SemanticProperties.Hint="Enable the cell cam for read barcode you click"
+                Command="{Binding AggingeCategoriaCommand}"
+                HorizontalOptions="Center" 
+                WidthRequest="160"
+                HeightRequest="60"/>
+            
+        </HorizontalStackLayout>
+        <Frame BackgroundColor="LightGray" Padding="10">
+            <ScrollView>
+                <Frame BackgroundColor="PowderBlue">
+                    <CollectionView EmptyView="Elenco di categoria vuoto." 
+                                x:Name="CollectionCategorie"
+                                ItemsSource="{Binding ListaCategorie}"
+                                ItemsUpdatingScrollMode="KeepLastItemInView">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Categoria">
+                                <HorizontalStackLayout Spacing="10" Padding="2.5">
+                                    <Label Text="{Binding Id}"/>
+                                    <Label Text="{Binding Nome}"/>
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Frame>
+            </ScrollView>
+        </Frame>
+    </VerticalStackLayout>
+</ContentPage>

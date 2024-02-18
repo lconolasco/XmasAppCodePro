@@ -12,14 +12,16 @@
     </ContentPage.BindingContext>
     <ScrollView>
         <StackLayout Padding="10" Spacing="10" HorizontalOptions="CenterAndExpand">
-            <Frame HeightRequest="90" Padding="10" BackgroundColor="WhiteSmoke">
+            <Frame Padding="10" BackgroundColor="WhiteSmoke">
                 <cv:CameraView 
                 x:Name="cameraView"
                 CamerasLoaded="cameraview_CamerasLoaded"
                 BarCodeDetectionEnabled="True"
                 BarcodeDetected="cameraview_BarcodeDetected" 
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand"
+                HeightRequest="70"
+                WidthRequest="470"/>
             </Frame>
             <SearchBar 
          x:Name="barcodeResult" 
@@ -27,7 +29,14 @@
          Text="{Binding Barcode}"
          Placeholder="Barcode" 
          PlaceholderColor="LightGray"
-         SearchCommand="{Binding RicuperaProdottoDalBarcode}" />
+         SearchCommand="{Binding RicuperaProdotto}" />
+            <Label 
+                Text="{Binding Message}"
+                TextColor="Red"
+                FontAttributes="Bold"
+                BackgroundColor="LightGray"
+                LineBreakMode="WordWrap"
+                MaxLines="4"/>
 
             <Label Text="Prodotto: "/>
             <Entry Text="{Binding Nome}" Placeholder="Prodotto" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text"/>
@@ -35,9 +44,26 @@
             <Label Text="Descrizione Prodotto" />
             <Entry Text="{Binding Descrizione}" Placeholder="Descrizione Prodotto" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text"/>
 
+            <Picker
+                x:Name="picker"
+                ItemsSource="{Binding ListaCategorie}"
+                Title="Selezionare una Categoria" 
+                ItemDisplayBinding="{Binding Nome}"
+                SelectedIndexChanged="OnPickerSelectedIndexChanged"
+                Background="#DFD8F7"
+                >
+                <Picker.Shadow>
+                    <Shadow
+                            Brush="Black"
+                            Offset="20,20"
+                            Radius="10"
+                            Opacity="0.6"/>
+                </Picker.Shadow>
+            </Picker>
+
             <HorizontalStackLayout>
-                <Label Text="Id Categoria: " VerticalTextAlignment="Center"/>
-                <Entry Text="{Binding CategoriaId}" VerticalTextAlignment="Center" Placeholder="Codice Categoria" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="175"/>
+                <Label x:Name="lblCategoria" Text="Id Categoria: " IsVisible="False" VerticalTextAlignment="Center"/>
+                <Entry x:Name="entryCategoria" Text="" IsVisible="False" VerticalTextAlignment="Center" Placeholder="Codice Categoria" PlaceholderColor="Gray" Background="#DFD8F7" Keyboard="Text" MinimumWidthRequest="175"/>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout>
@@ -91,7 +117,7 @@
             HorizontalOptions="Center" 
              WidthRequest="160"
              HeightRequest="60"
-                    Command="{Binding CategorieFromAggiungeProdottoPageViewModel}"/>
+                    Command="{Binding RicuperaCategorie}"/>
                     <Button
             x:Name="NewBtn"
             Text="Salva"

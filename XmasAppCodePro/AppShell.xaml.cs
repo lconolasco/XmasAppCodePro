@@ -10,6 +10,8 @@ namespace XmasAppCodePro
 
             RegisterForRoute<AggiungeProdottoPage>();
             RegisterForRoute<AggiornaProdottoPage>();
+            RegisterForRoute<AggiungeCategoriaPage>();
+            RegisterForRoute<AggiornaCategoriaPage>();
         }
 
         protected void RegisterForRoute<T>()
